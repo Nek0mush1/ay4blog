@@ -1,0 +1,161 @@
+---
+interface ShowcaseItem {
+  title: string;
+  role: string;
+  period: string;
+  href?: string;
+  badge?: string;
+  kind?: string;
+}
+
+const { items } = Astro.props as { items: ShowcaseItem[] };
+const basePath = import.meta.env.BASE_URL.replace(/\/$/, '');
+
+const groups = [
+  {
+    title: 'Experience',
+    items: items.filter((item) => getGroup(item) === 'experience'),
+  },
+  {
+    title: 'Open Source',
+    items: items.filter((item) => getGroup(item) === 'open-source'),
+  },
+  {
+    title: 'Education',
+    items: items.filter((item) => getGroup(item) === 'education'),
+  },
+].filter((group) => group.items.length > 0);
+
+function getGroup(item: ShowcaseItem) {
+  const label = `${item.kind ?? ''} ${item.badge ?? ''}`.toLowerCase();
+
+  if (label.includes('education')) return 'education';
+  if (label.includes('open source')) return 'open-source';
+  if (label.includes('experience') || label.includes('intern')) return 'experience';
+
+  return 'open-source';
+}
+
+function withBase(href?: string) {
+  if (!href) return '';
+
+  if (href.startsWith('http') || href.startsWith('mailto:') || href.startsWith('#')) {
+    return href;
+  }
+
+  if (href === '/') {
+    return `${basePath}/` || '/';
+  }
+
+  return `${basePath}${href.startsWith('/') ? href : `/${href}`}`;
+}
+---
+
+<article class="resume-list" aria-label="Experience, open source, and education">
+  {
+    groups.map((group) => (
+      <section class="resume-section">
+        <h2>{group.title}</h2>
+        <div class="resume-items">
+          {group.items.map((item) => {
+            const href = withBase(item.href);
+
+            return (
+              <section class="resume-item">
+                {href ? (
+                  <a
+                    href={href}
+                    target={href.startsWith('http') ? '_blank' : undefined}
+                    rel={href.startsWith('http') ? 'noreferrer' : undefined}
+                  >
+                    {item.title}
+                  </a>
+                ) : (
+                  <h3>{item.title}</h3>
+                )}
+                <p>{item.role}</p>
+                <time>{item.period}</time>
+              </section>
+            );
+          })}
+        </div>
+      </section>
+    ))
+  }
+</article>
+
+<style>
+  .resume-list {
+    display: grid;
+    gap: 10px;
+    width: 100%;
+    padding: 24px 0 0;
+    color: var(--paper-ink);
+  }
+
+  .resume-section {
+    display: grid;
+    gap: 2px;
+  }
+
+  h2 {
+    margin: 0;
+    color: var(--paper-ink);
+    font-size: 1.28rem;
+    font-weight: 500;
+    line-height: 1.25;
+  }
+
+  .resume-items {
+    display: grid;
+    gap: 6px;
+  }
+
+  .resume-item {
+    display: grid;
+    gap: 1px;
+    min-width: 0;
+  }
+
+  h3,
+  a {
+    width: fit-content;
+    max-width: 100%;
+    margin: 0;
+    overflow-wrap: anywhere;
+    color: var(--paper-ink);
+    font-size: 1.08rem;
+    font-weight: 700;
+    line-height: 1.35;
+  }
+
+  a {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-thickness: 1px;
+  }
+
+  a:hover,
+  a:focus-visible {
+    color: var(--paper-accent);
+  }
+
+  p,
+  time {
+    display: block;
+    margin: 0;
+    color: var(--paper-ink);
+    font-size: 0.98rem;
+    line-height: 1.45;
+  }
+
+  time {
+    font-family: var(--font-mono);
+  }
+
+  @media (max-width: 820px) {
+    .resume-list {
+      padding: 0;
+    }
+  }
+</style>

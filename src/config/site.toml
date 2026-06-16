@@ -1,0 +1,199 @@
+[config.site]
+title = "ay4's blog"
+description = "A personal navigation portfolio starter built with Astro."
+pageTitle = "navfolio | Digital Publication Space"
+pageDescription = "A calm AI-native personal publication space for notes, links, and writing."
+repository = "https://github.com/dodolalorc/astro-navfolio"
+footerNote = "Released as an open-source starter."
+
+[config.vibe]
+showTrail = true
+
+[config.theme]
+# Available palettes:
+# green-soft, green-vivid, rose-soft, pink-soft, purple-soft, blue-soft, orange-soft, brown-soft
+palette = "green-soft"
+
+[config.code]
+lightTheme = "catppuccin-latte"
+darkTheme = "catppuccin-macchiato"
+lineNumbers = true
+wrap = true
+preserveIndent = true
+collapseStyle = "collapsible-auto"
+
+[config.comments]
+enabled = true
+provider = "giscus"
+show_on_posts = true
+
+[config.search]
+enabled = true
+shortcut = "mod+k"
+placeholder = "Search notes..."
+maxResults = 6
+
+[config.blog]
+postsPerPage = 6
+
+[config.comments.giscus]
+repo = "dodolalorc/astro-navfolio"
+repo_id = "R_kgDOSaQejw"
+category = "Announcements"
+category_id = "DIC_kwDOSaQej84C9di9"
+mapping = "pathname"
+strict = "0"
+reactions_enabled = "1"
+emit_metadata = "0"
+input_position = "top"
+light_theme = "light"
+dark_theme = "dark"
+lang = "zh-CN"
+loading = "lazy"
+
+[config.comments.utterances]
+repo = ""
+issue_term = "pathname"
+label = "comment"
+theme = "github-light"
+
+[config.comments.waline]
+server_url = ""
+lang = "zh-CN"
+dark = "html.dark"
+pageview = true
+comment = true
+
+[config.profile]
+name = "ay4"
+handle = "雪花沉睡"
+role = "AI Agent Developer"
+company = "天津理工大学"
+location = "中国 天津/成都/北京"
+email = "2302597296@qq.com"
+website = "https://astro.navfolio.site/"
+github = "https://github.com/Nek0mush1"
+meta = "BSCS"
+avatar = "/images/logo.png"
+
+[[config.topNav.links]]
+label = "Home"
+href = "/"
+
+[[config.topNav.links]]
+label = "Blog"
+href = "/blog"
+
+[[config.topNav.links]]
+label = "Projects"
+href = "/projects"
+
+[[config.topNav.links]]
+label = "Vibe"
+href = "/vibe"
+
+[[config.topNav.links]]
+label = "About"
+href = "/about"
+
+[config.home]
+layout = "grid"
+
+[config.home.quote]
+text = [
+  "我的产品也会梦见电子羊吗?",
+]
+image = "/images/logo-with-name.png"
+
+[config.home.intro]
+title = "Welcome to my sonnet"
+name = "sonnet"
+body = [
+  "天津理工大学在读大数据专业学生,目前大二,感兴趣的方向是Agent开发,目前正在学习中,想要做出越来越棒的产品.爱好电吉他/羽毛球/摄影"
+]
+image = "/images/logo-cat.png"
+
+[config.home.latest]
+count = 1
+heatmapWeeks = 24
+showHeatmapLatest = true
+excludeDraft = true
+startDate = ""
+dateArchiveBaseHref = ""
+
+
+
+[[config.home.navigation]]
+icon = "pen"
+title = "Blog"
+subtitle = "Essays, notes, and field reports"
+href = "/blog"
+
+
+
+[[config.home.navigation]]
+icon = "github"
+title = "Open Source"
+subtitle = "Code, experiments, and tools"
+href = "https://github.com/Nek0mush1"
+
+[[config.home.connect]]
+label = "GitHub"
+href = "https://github.com/Nek0mush1"
+icon = "github"
+
+[[config.home.connect]]
+label = "Website"
+href = "https://astro.navfolio.site/"
+icon = "compass"
+
+[[config.home.connect]]
+label = "Blog"
+href = "/blog"
+icon = "book"
+
+[[config.home.connect]]
+label = "Projects"
+href = "/projects"
+icon = "repo"
+
+[[config.home.connect]]
+label = "Email"
+href = "mailto:hello@navfolio.site"
+icon = "mail"
+
+[[config.home.showcase]]
+title = "杭州星业品牌管理有限公司"
+role = "直播运营助理"
+period = "2025.07 - 2025.09"
+description = "参与直播间运营、商品节奏维护和数据复盘，把真实业务流程沉淀为可复用的方法。"
+href = ""
+badge = "Internship"
+kind = "Experience"
+
+[[config.home.showcase]]
+title = "pot-app-translate-plugin-TencentTMT"
+role = "腾讯云机器翻译 TMT 插件"
+period = "2026.05"
+description = "为 Pot 开发的翻译插件，封装腾讯云 TMT 接口，让桌面翻译工作流更顺手。"
+href = "https://github.com/Nek0mush1"
+badge = "Open Source"
+kind = "Open Source"
+
+[[config.home.showcase]]
+title = "A-type-game-of-web"
+role = "打字练习网站"
+period = "2026.05"
+description = "基于 React、TypeScript 和 TailwindCSS 的打字练习产品，关注交互反馈和练习体验。"
+href = "https://github.com/Nek0mush1"
+badge = "Open Source"
+kind = "Open Source"
+
+[[config.home.showcase]]
+title = "天津理工大学"
+role = "理学学士 - 计算机类"
+period = "2025.09 - 2029.06"
+description = ""
+href = ""
+badge = "Education"
+kind = "Education"
