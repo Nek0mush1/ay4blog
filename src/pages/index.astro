@@ -4,10 +4,9 @@ import NavigationCard from '../components/cards/NavigationCard.astro';
 import ProfileCard from '../components/cards/ProfileCard.astro';
 import DashboardFlow from '../components/layout/DashboardFlow.astro';
 import BlogHeatmap from '../components/widgets/BlogHeatmap.astro';
-import DoingCard from '../components/widgets/DoingCard.astro';
+import ShowcaseCard from '../components/widgets/ShowcaseCard.astro';
 import { getSiteConfig } from '../data/site';
 import BaseLayout from '../layouts/BaseLayout.astro';
-
 
 const { home, profile, site } = await getSiteConfig();
 ---
@@ -39,7 +38,7 @@ const { home, profile, site } = await getSiteConfig();
     </Fragment>
 
     <Fragment slot="recently">
-      <DoingCard items={home.doing} />
+      <ShowcaseCard items={home.showcase} />
     </Fragment>
   </DashboardFlow>
 </BaseLayout>
