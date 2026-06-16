@@ -109,7 +109,7 @@ image = "/images/logo-with-name.png"
 title = "Welcome to my sonnet"
 name = "sonnet"
 body = [
-  "天津理工大学在读大数据专业学生,目前大二,感兴趣的方向是Agent开发,目前正在学习中,想要做出越来越棒的产品.爱好电吉他/羽毛球/摄影"
+  "天津理工大学在读大数据专业学生,目前大二,感兴趣的方向是Agent开发&风资源评估与AI风电赋能,目前正在学习中,想要做出越来越棒的产品.爱好电吉他/羽毛球/摄影"
 ]
 image = "/images/logo-cat.png"
 
@@ -163,11 +163,20 @@ href = "mailto:hello@navfolio.site"
 icon = "mail"
 
 [[config.home.showcase]]
-title = "杭州星业品牌管理有限公司"
-role = "直播运营助理"
-period = "2025.07 - 2025.09"
-description = "参与直播间运营、商品节奏维护和数据复盘，把真实业务流程沉淀为可复用的方法。"
-href = ""
+title = "北京瑞科同创科技股份有限公司"
+role = "风资源工程师实习生"
+period = "2025.07 - 2025.08"
+description = "学习风资源分布、风参数、风电基础理论及项目开发流程,形成了对风资源评估、测风数据处理和新能源项目前期开发流程的基础理解。"
+href = "https://www.retec.cn/"
+badge = "Internship"
+kind = "Experience"
+
+[[config.home.showcase]]
+title = "凯宸能源科技（天津）有限公司"
+role = "测风数据处理实习生"
+period = "2026.01 - 2025.02"
+description = "学习测风激光雷达基本原理/安装过程,了解其在风电项目测风、风资源评估及风廓线观测中的应用。"
+href = "https://www.kcwinden.com/"
 badge = "Internship"
 kind = "Experience"
 
@@ -192,7 +201,7 @@ kind = "Open Source"
 [[config.home.showcase]]
 title = "天津理工大学"
 role = "理学学士 - 计算机类"
-period = "2025.09 - 2029.06"
+period = "2024.09 - 2028.06"
 description = ""
 href = ""
 badge = "Education"
