@@ -60,20 +60,21 @@
   --layout-page-bottom: 72px;
   --page-header-spacing: 54px;
   --page-header-spacing-mobile: 28px;
-  --font-cjk-system: 'Maple Mono', 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
-  --font-ui-cjk: 'LXGW UI Subset', var(--font-cjk-system);
+  --font-cjk-system: 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
+  --font-ui-cjk: 'LXGW UI Subset', 'LXGW WenKai Full', var(--font-cjk-system);
   --font-serif-cn: var(--font-ui-cjk);
   --font-mono:
-    'Maple Mono', 'LXGW UI Subset', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  --font-body: var(--font-mono);
-  --font-display: var(--font-mono);
-  --font-note: var(--font-mono);
-  --font-article: 'Maple Mono', 'LXGW WenKai Full', var(--font-cjk-system);
-  --font-heading: 'Maple Mono', 'LXGW WenKai Full', var(--font-cjk-system);
-  --font-page-heading: 'Maple Mono', 'LXGW UI Subset', var(--font-cjk-system);
-  --font-meta: var(--font-mono);
+    'Maple Mono', 'LXGW UI Subset', 'LXGW WenKai Full', ui-monospace, SFMono-Regular, Menlo,
+    Monaco, Consolas, monospace;
+  --font-body: var(--font-ui-cjk);
+  --font-display: var(--font-ui-cjk);
+  --font-note: var(--font-ui-cjk);
+  --font-article: var(--font-ui-cjk);
+  --font-heading: var(--font-ui-cjk);
+  --font-page-heading: var(--font-ui-cjk);
+  --font-meta: var(--font-ui-cjk);
   --font-code: var(--font-mono);
-  --font-ui-label: var(--font-mono);
+  --font-ui-label: var(--font-ui-cjk);
   --gray-gradient: rgba(226, 231, 224, 0.38), var(--paper-bg);
   --box-shadow: var(--paper-shadow-lift);
   color-scheme: light;
