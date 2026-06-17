@@ -1,11 +1,12 @@
 import { spawnSync } from 'node:child_process';
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
-import { extname, join } from 'node:path';
+import { delimiter, extname, join } from 'node:path';
 
 const projectRoot = process.cwd();
 const uiCharsPath = join(projectRoot, 'scripts/fonts/ui-chars.txt');
 const outputFontPath = join(projectRoot, 'public/fonts/lxgw-ui-subset.woff2');
 const sourceFontPath = join(projectRoot, 'public/fonts/LXGWWenKai-Regular.ttf');
+const fontToolsPath = join(projectRoot, 'node_modules/.cache/python-fonttools');
 
 const sourceDirs = ['src/pages', 'src/components', 'src/layouts', 'src/config'];
 const contentFrontmatterDirs = ['src/content/blog', 'src/content/projects', 'src/content/vibe'];
@@ -95,36 +96,55 @@ function runSubset() {
 
   const pythonCommand = ensurePythonFontTools();
   if (pythonCommand) {
-    const result = spawnSync(pythonCommand, ['-m', 'fontTools.subset', ...args], { stdio: 'inherit' });
+    const result = spawnSync(pythonCommand.command, ['-m', 'fontTools.subset', ...args], {
+      env: pythonCommand.env,
+      stdio: 'inherit',
+    });
     if (result.status === 0) return;
   }
 
   throw new Error(
-    'Unable to run fonttools. Install it with `python -m pip install --user fonttools brotli zopfli`, or make `pyftsubset` available on PATH.',
+    'Unable to run fonttools. Install it with `python -m pip install --target node_modules/.cache/python-fonttools fonttools brotli zopfli`, or make `pyftsubset` available on PATH.',
   );
 }
 
 function ensurePythonFontTools() {
   for (const pythonCommand of ['python', 'python3']) {
     if (!canRun(pythonCommand, ['--version'])) continue;
-    if (canRun(pythonCommand, ['-m', 'fontTools.subset', '--help'])) return pythonCommand;
+    if (canRun(pythonCommand, ['-m', 'fontTools.subset', '--help'])) {
+      return { command: pythonCommand };
+    }
 
-    console.log(`Installing fonttools for ${pythonCommand}...`);
+    const env = pythonEnvWithFontTools();
+    if (canRun(pythonCommand, ['-m', 'fontTools.subset', '--help'], env)) {
+      return { command: pythonCommand, env };
+    }
+
+    mkdirSync(fontToolsPath, { recursive: true });
+    console.log(`Installing fonttools for ${pythonCommand} into ${fontToolsPath}...`);
     const install = spawnSync(
       pythonCommand,
-      ['-m', 'pip', 'install', '--user', 'fonttools', 'brotli', 'zopfli'],
+      ['-m', 'pip', 'install', '--upgrade', '--target', fontToolsPath, 'fonttools', 'brotli', 'zopfli'],
       { stdio: 'inherit' },
     );
-    if (install.status === 0 && canRun(pythonCommand, ['-m', 'fontTools.subset', '--help'])) {
-      return pythonCommand;
+    if (install.status === 0 && canRun(pythonCommand, ['-m', 'fontTools.subset', '--help'], env)) {
+      return { command: pythonCommand, env };
     }
   }
 
   return null;
 }
 
-function canRun(command: string, args: string[]) {
-  const result = spawnSync(command, args, { stdio: 'ignore' });
+function pythonEnvWithFontTools() {
+  const pythonPath = process.env.PYTHONPATH
+    ? `${fontToolsPath}${delimiter}${process.env.PYTHONPATH}`
+    : fontToolsPath;
+
+  return { ...process.env, PYTHONPATH: pythonPath };
+}
+
+function canRun(command: string, args: string[], env = process.env) {
+  const result = spawnSync(command, args, { env, stdio: 'ignore' });
   return result.status === 0;
 }
 
