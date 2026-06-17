@@ -2,7 +2,7 @@
 title: "记录一些知识,笔记和照片"
 description: ""
 date: "2026-06-17T07:08:43.462Z"
-draft: true
+draft: false
 showHeroImage: false
 tags: ["吐槽","随笔"]
 categories: ["日常"]
