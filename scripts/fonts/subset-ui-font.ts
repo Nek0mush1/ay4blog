@@ -90,23 +90,42 @@ function runSubset() {
     '--no-hinting',
   ];
 
-  const commands = [
-    { command: 'pyftsubset', args },
-    { command: 'python', args: ['-m', 'fontTools.subset', ...args] },
-  ];
+  const pyftsubset = spawnSync('pyftsubset', args, { stdio: 'inherit' });
+  if (pyftsubset.status === 0) return;
 
-  for (const { command, args: commandArgs } of commands) {
-    const result = spawnSync(command, commandArgs, { stdio: 'inherit' });
-    if (result.status === 0) {
-      return;
-    }
-
-    if (result.error && 'code' in result.error && result.error.code === 'ENOENT') continue;
+  const pythonCommand = ensurePythonFontTools();
+  if (pythonCommand) {
+    const result = spawnSync(pythonCommand, ['-m', 'fontTools.subset', ...args], { stdio: 'inherit' });
+    if (result.status === 0) return;
   }
 
   throw new Error(
-    'Unable to run fonttools. Install it with `python -m pip install --user fonttools brotli`, or make `pyftsubset` available on PATH.',
+    'Unable to run fonttools. Install it with `python -m pip install --user fonttools brotli zopfli`, or make `pyftsubset` available on PATH.',
   );
+}
+
+function ensurePythonFontTools() {
+  for (const pythonCommand of ['python', 'python3']) {
+    if (!canRun(pythonCommand, ['--version'])) continue;
+    if (canRun(pythonCommand, ['-m', 'fontTools.subset', '--help'])) return pythonCommand;
+
+    console.log(`Installing fonttools for ${pythonCommand}...`);
+    const install = spawnSync(
+      pythonCommand,
+      ['-m', 'pip', 'install', '--user', 'fonttools', 'brotli', 'zopfli'],
+      { stdio: 'inherit' },
+    );
+    if (install.status === 0 && canRun(pythonCommand, ['-m', 'fontTools.subset', '--help'])) {
+      return pythonCommand;
+    }
+  }
+
+  return null;
+}
+
+function canRun(command: string, args: string[]) {
+  const result = spawnSync(command, args, { stdio: 'ignore' });
+  return result.status === 0;
 }
 
 const chars = new Set<string>();
