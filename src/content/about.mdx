@@ -1,12 +1,11 @@
 ---
-title: '关于 navfolio'
-description: '一个安静的 Astro 个人发布空间，用于整合主页、博客、项目文档、Vibe 短记录、搜索和评论系统。'
+title: '关于我与我的blog'
+description: '运行这样的一个网站不仅是为了记录自己的学习历程,也更是为了在学习的路上督促常常偷懒的自己。'
 date: '2026-05-01T00:00:00+08:00'
 draft: false
 showHeroImage: false
 tags:
   - About
-  - Navfolio
   - Personal Site
 comments: false
 sidebar:
@@ -17,39 +16,41 @@ sidebar:
 
 import FriendLinkCard from '../components/mdx/FriendLinkCard.astro';
 
-navfolio 是一个轻量的个人发布起点，适合想把个人资料、常用链接、项目笔记、长文写作和短记录集中到同一处的人。
+## 个人简介
+我是一个大二在读的大数据专业学生,虽说喜欢计算机的内容但大一大二都在风电相关的岗位和公司进行实习.  
 
-它把个人网站从“静态简历页”转向“可阅读的内容操作面板”：既是公开思考的笔记本，也是身份入口的轻量索引，同时还是可长期积累的写作归档空间。
+目前正在全力加速学习agent开发和应用,想要在这里记录我在学习的过程中遇到的各种各样令人惊喜的知识和内容  
 
-如果这个项目对你有帮助，欢迎在 GitHub 仓库点一个 star：[dodolalorc/astro-navfolio](https://github.com/dodolalorc/astro-navfolio)。
+平时的碎碎念和日常学习进度(甚至日记)都在[Blog](https://ay4blog.vercel.app/blog)页面里  
 
-## 这个空间适合做什么
+自己的一些toy项目则在[Projects](https://ay4blog.vercel.app/projects)页面里  
 
-你可以在这里沉淀长期笔记、文章草稿、项目记录、生活片段，以及那些原本会分散在多个主页与仓库里的上下文信息。
+而一些更短更即时的生活记录和摄影则在[Vibe](https://ay4blog.vercel.app/vibe)页面里。
 
-默认内容是示例数据。替换 starter 内容时，通常优先编辑这些位置：
+# 它是如何构建的
 
-- `src/config/site.toml`：站点标题、作者资料、导航、首页、主题、搜索和评论配置。
-- `src/content/blog/`：长文、教程和模块使用手册。
-- `src/content/projects/`：项目入口和项目文档。
-- `src/content/vibe/`：更短、更即时的记录。
-- `src/content/about.mdx`：当前这个关于页面。
+这个博客是基于 Astro 框架构建的，使用了 Navfolio 主题,  
 
-## 它是如何构建的
+同时我也自己添加了一些开源插件和设计让它变得更漂亮.  
 
-项目采用 Astro-first、内容驱动、默认静态输出的方式。你可以直接编辑 Markdown 和 MDX 内容，将其渲染为文章页面，并部署到 GitHub Pages、Vercel、Netlify、Cloudflare Pages，或任何支持 Astro 构建的平台。
+Astro 是一个现代的静态站点生成器，支持多种前端框架和工具链,  
 
-视觉语言刻意保持克制：结构柔和、界面低噪、排版可读，交互也以轻量为主，服务阅读而不打断阅读。
+而 Navfolio 则提供了一个简洁、响应式的设计，适合个人博客和项目展示。
 
-## 当前支持的模块
+## 联系我一起学习进步!
+如果这个blog对你有帮助,  
+欢迎来到我的[github](https://github.com/Nek0mush1/ay4blog)。  
 
-- 内容集合：博客、项目、About 和 Vibe 都由 Astro Content Collection 管理。
-- 全文搜索：Pagefind 负责构建静态搜索索引，支持 `Ctrl+K` / `Cmd+K`。
-- 评论系统：可在 giscus、utterances、Waline 和关闭状态之间切换。
-- 主题色盘：站点维护者可以在 `site.toml` 中选择内置色盘。
-- MDX 组件：支持友链卡片、长图、轮播和可缩放图片等内容组件。
-- RSS / Sitemap：构建时自动生成，适合静态站点发布。
+当然我也很想遇到志同道合的朋友,  
+无论是同样在学习的朋友,还是发现了我文章里有错误的朋友,都欢迎与我讨论和交流,  
+我喜欢你们.
 
+
+
+
+#
+
+#
 ## 相关链接
 
 <FriendLinkCard

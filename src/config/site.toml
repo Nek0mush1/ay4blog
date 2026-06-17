@@ -181,10 +181,10 @@ badge = "Internship"
 kind = "Experience"
 
 [[config.home.showcase]]
-title = "pot-app-translate-plugin-TencentTMT"
-role = "腾讯云机器翻译 TMT 插件"
+title = "ContextVoice IME"
+role = "上下文语音纠错输入法"
 period = "2026.05"
-description = "为 Pot 开发的翻译插件，封装腾讯云 TMT 接口，让桌面翻译工作流更顺手。"
+description = "专门解决中文专业词语音识别错误的Android个人输入法。"
 href = "https://github.com/Nek0mush1"
 badge = "Open Source"
 kind = "Open Source"

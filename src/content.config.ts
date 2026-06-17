@@ -19,8 +19,16 @@ const remoteImageSchema = z
   .url()
   .refine((src) => /^https?:\/\//i.test(src), 'Remote images must start with http:// or https://');
 
+const publicImageSchema = z
+  .string()
+  .regex(
+    /^(?:\/(?!\/)|(?:postImages|vibeImages|images)\/)/,
+    'Public images must start with /, such as /postImages/101.jpg',
+  )
+  .transform((src) => (src.startsWith('/') ? src : `/${src}`));
+
 const contentImageSchema = ({ image }: Parameters<CollectionSchemaFactory>[0]) =>
-  z.union([image(), remoteImageSchema]);
+  z.union([publicImageSchema, remoteImageSchema, image()]);
 
 const articleSchema = ({ image }: Parameters<CollectionSchemaFactory>[0]) =>
   z.object({

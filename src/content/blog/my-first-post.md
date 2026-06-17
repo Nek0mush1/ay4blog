@@ -3,7 +3,8 @@ title: "记录一些知识,笔记和照片"
 description: ""
 date: "2026-06-17T07:08:43.462Z"
 draft: false
-showHeroImage: false
+heroImage: "/postImages/101.jpg"
+showHeroImage: true
 tags: ["吐槽","随笔"]
 categories: ["日常"]
 series: []
@@ -16,4 +17,6 @@ sidebar:
 
 # My First Post
 
+## 复活? 
 这是ay4的第二个维护的blog了,不知道会不会像第一个blog死在半路上,死的原因是当时使用的theme太漏味了....
+
