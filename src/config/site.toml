@@ -189,14 +189,7 @@ href = "https://github.com/Nek0mush1"
 badge = "Open Source"
 kind = "Open Source"
 
-[[config.home.showcase]]
-title = "A-type-game-of-web"
-role = "打字练习网站"
-period = "2026.05"
-description = "基于 React、TypeScript 和 TailwindCSS 的打字练习产品，关注交互反馈和练习体验。"
-href = "https://github.com/Nek0mush1"
-badge = "Open Source"
-kind = "Open Source"
+
 
 [[config.home.showcase]]
 title = "天津理工大学"
