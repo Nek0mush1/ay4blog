@@ -12,6 +12,7 @@
     "preview": "astro preview",
     "astro": "astro",
     "post:new": "bun scripts/new-content.ts blog",
+    "project:new": "bun scripts/new-content.ts project",
     "vibe:new": "bun scripts/new-content.ts vibe",
     "lint": "eslint .",
     "format": "prettier --write .",

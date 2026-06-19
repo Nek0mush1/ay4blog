@@ -1,7 +1,7 @@
 import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 
-type ContentType = 'blog' | 'vibe';
+type ContentType = 'blog' | 'project' | 'vibe';
 type Extension = 'md' | 'mdx';
 
 type ContentTypeConfig = {
@@ -21,6 +21,14 @@ const CONTENT_TYPES = {
     fileName: (slug) => slug,
     bodyTemplate: createBlogBody,
     frontmatterTemplate: createBlogFrontmatter,
+  },
+  project: {
+    collectionName: 'project',
+    directory: 'src/content/projects',
+    defaultExtension: 'md',
+    fileName: (slug) => slug,
+    bodyTemplate: createProjectBody,
+    frontmatterTemplate: createProjectFrontmatter,
   },
   vibe: {
     collectionName: 'vibe',
@@ -78,7 +86,7 @@ console.log(`Created new ${config.collectionName} file:`);
 console.log(relativePath);
 
 function isSupportedContentType(value: string | undefined): value is ContentType {
-  return value === 'blog' || value === 'vibe';
+  return value === 'blog' || value === 'project' || value === 'vibe';
 }
 
 function normalizeFilename(value: string): string {
@@ -128,6 +136,24 @@ sidebar:
 ---`;
 }
 
+function createProjectFrontmatter(title: string, isoDate: string): string {
+  return `---
+title: "${escapeYamlString(title)}"
+description: ""
+date: "${isoDate}"
+draft: true
+showHeroImage: false
+tags: []
+categories: []
+series: []
+comments: true
+sidebar:
+  enable: false
+  toc: true
+  relatedPosts: false
+---`;
+}
+
 function createVibeFrontmatter(title: string, isoDate: string): string {
   return `---
 title: "${escapeYamlString(title)}"
@@ -150,6 +176,23 @@ function createBlogBody(title: string): string {
 Start writing here.`;
 }
 
+function createProjectBody(title: string): string {
+  return `# ${title}
+
+## Overview
+
+Describe what this project does and why it exists.
+
+## Tech Stack
+
+- 
+
+## Links
+
+- GitHub: 
+- Demo: `;
+}
+
 function createVibeBody(): string {
   return 'A small note from today.';
 }
@@ -163,6 +206,7 @@ function printMissingFilename(): void {
 
 Examples:
 bun run post:new my-first-post
+bun run project:new my-ai-tool
 bun run vibe:new today-cloud`);
 }
 
@@ -171,5 +215,6 @@ function printUnsupportedContentType(contentType: string | undefined): void {
 
 Supported types:
 - blog
+- project
 - vibe`);
 }

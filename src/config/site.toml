@@ -1,8 +1,8 @@
 [config.site]
 title = "ay4's blog"
 description = "A personal navigation portfolio starter built with Astro."
-pageTitle = "navfolio | Digital Publication Space"
-pageDescription = "A calm AI-native personal publication space for notes, links, and writing."
+pageTitle = "Welcome to ay4's blog"
+pageDescription = "A calm  personal publication space for notes, links, and writing."
 repository = "https://github.com/dodolalorc/astro-navfolio"
 footerNote = "Released as an open-source starter."
 
@@ -185,7 +185,7 @@ title = "ContextVoice IME"
 role = "上下文语音纠错输入法"
 period = "2026.05"
 description = "专门解决中文专业词语音识别错误的Android个人输入法。"
-href = "https://github.com/Nek0mush1"
+href = "https://github.com/Nek0mush1/voiceTransformForAndroid"
 badge = "Open Source"
 kind = "Open Source"
 

@@ -178,6 +178,60 @@ a:hover {
   color: var(--accent);
 }
 
+.article-content .mask,
+.prose .mask {
+  padding: 0 0.18em;
+  border-radius: 4px;
+  background: #f1eadc;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  color: transparent;
+  cursor: help;
+  transition:
+    background-color 160ms ease,
+    color 160ms ease;
+}
+
+.article-content .mask:hover,
+.article-content .mask:focus-visible,
+.article-content .mask:active,
+.prose .mask:hover,
+.prose .mask:focus-visible,
+.prose .mask:active {
+  background: rgba(241, 234, 220, 0.34);
+  color: inherit;
+}
+
+.article-content .mask-block,
+.prose .mask-block {
+  display: block;
+  padding: 0.7em 0.85em;
+  border-radius: 6px;
+  background: #f1eadc;
+  color: transparent;
+  cursor: help;
+  transition:
+    background-color 160ms ease,
+    color 160ms ease;
+}
+
+.article-content .mask-block *,
+.prose .mask-block * {
+  color: inherit;
+}
+
+.article-content .mask-block:hover,
+.article-content .mask-block:focus-visible,
+.article-content .mask-block:focus-within,
+.article-content .mask-block:active,
+.prose .mask-block:hover,
+.prose .mask-block:focus-visible,
+.prose .mask-block:focus-within,
+.prose .mask-block:active {
+  background: rgba(241, 234, 220, 0.34);
+  color: inherit;
+}
+
 p {
   margin-bottom: 1em;
 }
