@@ -5,7 +5,7 @@ date: "2026-06-19T16:45:21.491Z"
 draft: false
 showHeroImage: false
 tags: ["情绪","规划"]
-categories: ["学习"]
+categories: ["日常"]
 series: []
 comments: true
 sidebar:

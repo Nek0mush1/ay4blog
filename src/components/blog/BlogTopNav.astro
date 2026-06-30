@@ -58,6 +58,8 @@ const shouldShowTocAction = showTocIcon && tocItems.length > 0;
 ---
 
 <header class="blog-top-nav" data-pagefind-ignore>
+  <span class="nav-liquid-glass" aria-hidden="true" data-liquid-glass-layer></span>
+
   <button
     class="mobile-menu-toggle"
     type="button"
@@ -177,8 +179,204 @@ const shouldShowTocAction = showTocIcon && tocItems.length > 0;
 </header>
 
 <script>
+  const liquidGlassNavCleanups = new WeakMap<HTMLElement, () => void>();
+
+  const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
+
+  const smoothStep = (edge0: number, edge1: number, value: number) => {
+    const t = clamp((value - edge0) / (edge1 - edge0), 0, 1);
+    return t * t * (3 - 2 * t);
+  };
+
+  const roundedRectSdf = (
+    x: number,
+    y: number,
+    halfWidth: number,
+    halfHeight: number,
+    radius: number,
+  ) => {
+    const qx = Math.abs(x) - halfWidth + radius;
+    const qy = Math.abs(y) - halfHeight + radius;
+    return Math.min(Math.max(qx, qy), 0) + Math.hypot(Math.max(qx, 0), Math.max(qy, 0)) - radius;
+  };
+
+  const createLiquidGlassMap = (width: number, height: number, radius: number) => {
+    const canvas = document.createElement('canvas');
+    const pixelRatio = Math.min(window.devicePixelRatio || 1, 1.5);
+    const canvasWidth = Math.max(1, Math.round(width * pixelRatio));
+    const canvasHeight = Math.max(1, Math.round(height * pixelRatio));
+    canvas.width = canvasWidth;
+    canvas.height = canvasHeight;
+
+    const context = canvas.getContext('2d');
+    if (!context) {
+      return '';
+    }
+
+    const imageData = context.createImageData(canvasWidth, canvasHeight);
+    const data = imageData.data;
+    const scaledRadius = radius * pixelRatio;
+    const halfWidth = canvasWidth / 2;
+    const halfHeight = canvasHeight / 2;
+    const edgeWidth = Math.max(10, Math.min(canvasWidth, canvasHeight) * 0.32);
+    const rippleWidth = Math.max(6, Math.min(canvasWidth, canvasHeight) * 0.13);
+
+    for (let y = 0; y < canvasHeight; y += 1) {
+      for (let x = 0; x < canvasWidth; x += 1) {
+        const centeredX = x - halfWidth;
+        const centeredY = y - halfHeight;
+        const distance = roundedRectSdf(centeredX, centeredY, halfWidth, halfHeight, scaledRadius);
+        const edge = 1 - smoothStep(0, edgeWidth, Math.abs(distance));
+        const innerRipple = Math.sin((x / canvasWidth) * Math.PI * 2.5) * 0.15 + 0.85;
+        const softBend = clamp(edge * innerRipple, 0, 1);
+        const cornerGlow = smoothStep(rippleWidth, 0, Math.abs(distance));
+        const normalX = centeredX / Math.max(1, halfWidth);
+        const normalY = centeredY / Math.max(1, halfHeight);
+        const index = (y * canvasWidth + x) * 4;
+
+        data[index] = clamp(128 + normalX * softBend * 55 + cornerGlow * 9, 0, 255);
+        data[index + 1] = clamp(128 + normalY * softBend * 55 + cornerGlow * 9, 0, 255);
+        data[index + 2] = 128;
+        data[index + 3] = 255;
+      }
+    }
+
+    context.putImageData(imageData, 0, 0);
+    return canvas.toDataURL();
+  };
+
+  const initLiquidGlassNav = (header: HTMLElement) => {
+    const glassLayer = header.querySelector<HTMLElement>('[data-liquid-glass-layer]');
+    if (!glassLayer || liquidGlassNavCleanups.has(header)) {
+      return;
+    }
+
+    const supportsBackdropFilter =
+      typeof CSS !== 'undefined' &&
+      (CSS.supports('backdrop-filter', 'blur(1px)') ||
+        CSS.supports('-webkit-backdrop-filter', 'blur(1px)'));
+
+    if (!supportsBackdropFilter) {
+      header.dataset.liquidGlassFallback = 'true';
+      return;
+    }
+
+    const filterId = `nav-liquid-glass-${Math.random().toString(36).slice(2)}`;
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('aria-hidden', 'true');
+    svg.setAttribute('focusable', 'false');
+    svg.style.cssText = 'position:fixed;width:0;height:0;overflow:hidden;pointer-events:none;';
+
+    const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+    const filter = document.createElementNS('http://www.w3.org/2000/svg', 'filter');
+    filter.setAttribute('id', filterId);
+    filter.setAttribute('filterUnits', 'userSpaceOnUse');
+    filter.setAttribute('color-interpolation-filters', 'sRGB');
+
+    const feImage = document.createElementNS('http://www.w3.org/2000/svg', 'feImage');
+    feImage.setAttribute('result', 'glass-map');
+    feImage.setAttribute('preserveAspectRatio', 'none');
+
+    const feDisplacementMap = document.createElementNS(
+      'http://www.w3.org/2000/svg',
+      'feDisplacementMap',
+    );
+    feDisplacementMap.setAttribute('in', 'SourceGraphic');
+    feDisplacementMap.setAttribute('in2', 'glass-map');
+    feDisplacementMap.setAttribute('xChannelSelector', 'R');
+    feDisplacementMap.setAttribute('yChannelSelector', 'G');
+
+    filter.append(feImage, feDisplacementMap);
+    defs.append(filter);
+    svg.append(defs);
+    document.body.append(svg);
+
+    let frame = 0;
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+    const updateFilter = () => {
+      frame = 0;
+      const rect = header.getBoundingClientRect();
+      const width = Math.max(1, Math.round(rect.width));
+      const height = Math.max(1, Math.round(rect.height));
+      const radius = parseFloat(window.getComputedStyle(header).borderRadius) || 22;
+      const reduceMotion = mediaQuery.matches;
+      const map = createLiquidGlassMap(width, height, radius);
+
+      filter.setAttribute('x', '0');
+      filter.setAttribute('y', '0');
+      filter.setAttribute('width', String(width));
+      filter.setAttribute('height', String(height));
+      feImage.setAttribute('width', String(width));
+      feImage.setAttribute('height', String(height));
+      feDisplacementMap.setAttribute(
+        'scale',
+        reduceMotion ? '0' : String(clamp(width / 58, 9, 16)),
+      );
+
+      if (map) {
+        feImage.setAttribute('href', map);
+      }
+
+      const glassFilter = reduceMotion
+        ? 'blur(16px) saturate(1.18)'
+        : `url(#${filterId}) blur(14px) saturate(1.28) contrast(1.04)`;
+      glassLayer.style.backdropFilter = glassFilter;
+      glassLayer.style.webkitBackdropFilter = glassFilter;
+      header.dataset.liquidGlassReady = 'true';
+    };
+
+    const requestUpdate = () => {
+      if (frame) {
+        return;
+      }
+
+      frame = window.requestAnimationFrame(updateFilter);
+    };
+
+    const resizeObserver = new ResizeObserver(requestUpdate);
+    resizeObserver.observe(header);
+    mediaQuery.addEventListener('change', requestUpdate);
+
+    const onPointerMove = (event: PointerEvent) => {
+      if (mediaQuery.matches) {
+        return;
+      }
+
+      const rect = header.getBoundingClientRect();
+      header.style.setProperty('--glass-pointer-x', `${event.clientX - rect.left}px`);
+      header.style.setProperty('--glass-pointer-y', `${event.clientY - rect.top}px`);
+    };
+
+    const onPointerLeave = () => {
+      header.style.removeProperty('--glass-pointer-x');
+      header.style.removeProperty('--glass-pointer-y');
+    };
+
+    header.addEventListener('pointermove', onPointerMove, { passive: true });
+    header.addEventListener('pointerleave', onPointerLeave);
+    requestUpdate();
+
+    liquidGlassNavCleanups.set(header, () => {
+      if (frame) {
+        window.cancelAnimationFrame(frame);
+      }
+
+      resizeObserver.disconnect();
+      mediaQuery.removeEventListener('change', requestUpdate);
+      header.removeEventListener('pointermove', onPointerMove);
+      header.removeEventListener('pointerleave', onPointerLeave);
+      svg.remove();
+      glassLayer.style.backdropFilter = '';
+      glassLayer.style.webkitBackdropFilter = '';
+      delete header.dataset.liquidGlassReady;
+    });
+  };
+
   const initMobileTopNav = () => {
     for (const header of document.querySelectorAll<HTMLElement>('.blog-top-nav')) {
+      initLiquidGlassNav(header);
+
       const toggle = header.querySelector<HTMLButtonElement>('[data-mobile-menu-toggle]');
       const menu = header.querySelector<HTMLElement>('[data-mobile-menu]');
       const tocTrigger = header.querySelector<HTMLButtonElement>('[data-mobile-toc-trigger]');
@@ -322,6 +520,9 @@ const shouldShowTocAction = showTocIcon && tocItems.length > 0;
 
 <style>
   .blog-top-nav {
+    --glass-pointer-x: 50%;
+    --glass-pointer-y: 50%;
+
     position: fixed;
     top: 18px;
     right: 0;
@@ -335,16 +536,108 @@ const shouldShowTocAction = showTocIcon && tocItems.length > 0;
     min-height: 56px;
     padding: 10px 14px 10px 18px;
     margin: 0 auto;
-    border: 1px solid var(--paper-line);
-    border-radius: 8px;
-    background: var(--paper-nav);
-    box-shadow: var(--paper-shadow);
+    border: 0;
+    border-radius: 20px;
+    background: transparent;
     opacity: 1;
+    isolation: isolate;
     transform: translateY(0);
     transition:
       opacity 180ms ease,
       transform 220ms ease;
     will-change: transform;
+  }
+
+  .brand,
+  .nav-links,
+  .nav-actions,
+  .mobile-menu-toggle {
+    position: relative;
+    z-index: 1;
+  }
+
+  .nav-liquid-glass {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    border: 1px solid color-mix(in srgb, var(--paper-line-strong) 72%, rgba(255, 255, 255, 0.52));
+    border-radius: inherit;
+    background:
+      radial-gradient(
+        circle at var(--glass-pointer-x) var(--glass-pointer-y),
+        rgba(255, 255, 255, 0.38),
+        transparent 34%
+      ),
+      linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.46),
+        rgba(var(--paper-surface-rgb), 0.48) 48%,
+        rgba(255, 255, 255, 0.22)
+      );
+    box-shadow:
+      0 18px 48px rgba(31, 35, 40, 0.1),
+      0 3px 10px rgba(31, 35, 40, 0.045),
+      inset 0 1px 0 rgba(255, 255, 255, 0.86),
+      inset 0 -18px 30px rgba(102, 125, 109, 0.08);
+    backdrop-filter: blur(16px) saturate(1.18);
+    -webkit-backdrop-filter: blur(16px) saturate(1.18);
+    pointer-events: none;
+    transition:
+      border-color 180ms ease,
+      box-shadow 180ms ease,
+      background 220ms ease;
+  }
+
+  .nav-liquid-glass::before,
+  .nav-liquid-glass::after {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    content: '';
+    pointer-events: none;
+  }
+
+  .nav-liquid-glass::before {
+    background:
+      linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.48) 48%, transparent 100%),
+      linear-gradient(180deg, rgba(255, 255, 255, 0.46), transparent 44%);
+    opacity: 0.42;
+    mix-blend-mode: screen;
+  }
+
+  .nav-liquid-glass::after {
+    inset: 1px;
+    border: 1px solid rgba(255, 255, 255, 0.42);
+    box-shadow:
+      inset 0 0 0 1px rgba(255, 255, 255, 0.18),
+      inset 10px 0 26px rgba(255, 255, 255, 0.16),
+      inset -12px -16px 30px rgba(102, 125, 109, 0.08);
+  }
+
+  :global(:root[data-theme='dark']) .nav-liquid-glass {
+    border-color: color-mix(in srgb, var(--paper-line-strong) 80%, rgba(255, 255, 255, 0.18));
+    background:
+      radial-gradient(
+        circle at var(--glass-pointer-x) var(--glass-pointer-y),
+        rgba(255, 255, 255, 0.13),
+        transparent 36%
+      ),
+      linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.11),
+        rgba(var(--paper-surface-rgb), 0.56) 48%,
+        rgba(255, 255, 255, 0.06)
+      );
+    box-shadow:
+      0 18px 48px rgba(0, 0, 0, 0.28),
+      0 3px 10px rgba(0, 0, 0, 0.18),
+      inset 0 1px 0 rgba(255, 255, 255, 0.18),
+      inset 0 -18px 30px rgba(168, 186, 169, 0.07);
+  }
+
+  :global(:root[data-theme='dark']) .nav-liquid-glass::before {
+    opacity: 0.18;
   }
 
   .blog-top-nav[data-nav-hidden='true'] {
@@ -394,16 +687,30 @@ const shouldShowTocAction = showTocIcon && tocItems.length > 0;
     justify-content: center;
     min-width: 74px;
     padding: 9px 12px 12px;
-    border-radius: 8px;
+    border: 1px solid transparent;
+    border-radius: 14px;
     color: var(--paper-ink-soft);
     font-size: 0.9rem;
     font-weight: 700;
+    transition:
+      background 180ms ease,
+      border-color 180ms ease,
+      box-shadow 180ms ease,
+      color 180ms ease,
+      transform 180ms ease;
   }
 
   a.nav-link:hover,
   a.nav-link.active {
-    background: var(--paper-control-hover);
+    border-color: rgba(255, 255, 255, 0.42);
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.5), rgba(var(--paper-surface-rgb), 0.36)),
+      var(--paper-control-hover);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.62),
+      0 8px 20px rgba(31, 35, 40, 0.06);
     color: var(--paper-accent);
+    transform: translateY(-1px);
   }
 
   .nav-link.active::after {
@@ -415,6 +722,9 @@ const shouldShowTocAction = showTocIcon && tocItems.length > 0;
     border-radius: 50%;
     background: var(--paper-accent);
     content: '';
+    box-shadow:
+      0 0 0 3px color-mix(in srgb, var(--paper-accent) 16%, transparent),
+      0 0 12px color-mix(in srgb, var(--paper-accent) 34%, transparent);
     transform: translateX(-50%);
   }
 
@@ -437,11 +747,24 @@ const shouldShowTocAction = showTocIcon && tocItems.length > 0;
     width: 38px;
     height: 38px;
     padding: 0;
-    border: 1px solid var(--paper-line);
-    border-radius: 8px;
-    background: var(--paper-control);
+    border: 1px solid color-mix(in srgb, var(--paper-line-strong) 76%, rgba(255, 255, 255, 0.42));
+    border-radius: 13px;
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.34), rgba(var(--paper-surface-rgb), 0.24)),
+      var(--paper-control);
     color: var(--paper-ink);
     cursor: pointer;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.54),
+      0 4px 14px rgba(31, 35, 40, 0.045);
+    backdrop-filter: blur(10px) saturate(1.12);
+    -webkit-backdrop-filter: blur(10px) saturate(1.12);
+    transition:
+      background 180ms ease,
+      border-color 180ms ease,
+      box-shadow 180ms ease,
+      color 180ms ease,
+      transform 180ms ease;
   }
 
   .mobile-menu-toggle,
@@ -452,8 +775,15 @@ const shouldShowTocAction = showTocIcon && tocItems.length > 0;
   .nav-actions a:hover,
   .nav-actions button:not(.sun-moon-toggle):hover,
   .mobile-menu-toggle:hover {
-    background: var(--paper-control-hover);
+    border-color: color-mix(in srgb, var(--paper-accent) 28%, rgba(255, 255, 255, 0.54));
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.46), rgba(var(--paper-surface-rgb), 0.3)),
+      var(--paper-control-hover);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.68),
+      0 9px 22px rgba(31, 35, 40, 0.07);
     color: var(--paper-accent);
+    transform: translateY(-1px);
   }
 
   @media (max-width: 720px) {
@@ -464,7 +794,7 @@ const shouldShowTocAction = showTocIcon && tocItems.length > 0;
       width: min(calc(100% - 20px), 520px);
       min-height: 54px;
       padding: 8px 10px 8px 14px;
-      border-radius: 8px;
+      border-radius: 18px;
     }
 
     .nav-links {
@@ -519,10 +849,16 @@ const shouldShowTocAction = showTocIcon && tocItems.length > 0;
       min-width: min(260px, calc(100vw - 20px));
       gap: 4px;
       padding: 8px;
-      border: 1px solid var(--paper-line);
-      border-radius: 8px;
-      background: var(--paper-nav);
-      box-shadow: var(--paper-shadow);
+      border: 1px solid color-mix(in srgb, var(--paper-line-strong) 76%, rgba(255, 255, 255, 0.42));
+      border-radius: 16px;
+      background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.42), rgba(var(--paper-surface-rgb), 0.52)),
+        var(--paper-nav);
+      box-shadow:
+        0 18px 42px rgba(31, 35, 40, 0.11),
+        inset 0 1px 0 rgba(255, 255, 255, 0.64);
+      backdrop-filter: blur(16px) saturate(1.18);
+      -webkit-backdrop-filter: blur(16px) saturate(1.18);
       opacity: 0;
       pointer-events: none;
       transform: translateY(-4px);
@@ -541,10 +877,16 @@ const shouldShowTocAction = showTocIcon && tocItems.length > 0;
       gap: 8px;
       overflow: auto;
       padding: 10px;
-      border: 1px solid var(--paper-line);
-      border-radius: 8px;
-      background: var(--paper-nav);
-      box-shadow: var(--paper-shadow);
+      border: 1px solid color-mix(in srgb, var(--paper-line-strong) 76%, rgba(255, 255, 255, 0.42));
+      border-radius: 16px;
+      background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.42), rgba(var(--paper-surface-rgb), 0.52)),
+        var(--paper-nav);
+      box-shadow:
+        0 18px 42px rgba(31, 35, 40, 0.11),
+        inset 0 1px 0 rgba(255, 255, 255, 0.64);
+      backdrop-filter: blur(16px) saturate(1.18);
+      -webkit-backdrop-filter: blur(16px) saturate(1.18);
       opacity: 0;
       pointer-events: none;
       transform: translateY(-4px);
@@ -578,7 +920,9 @@ const shouldShowTocAction = showTocIcon && tocItems.length > 0;
 
     .mobile-menu-link:hover,
     .mobile-menu-link.active {
-      background: var(--paper-control-hover);
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.44), rgba(var(--paper-surface-rgb), 0.28)),
+        var(--paper-control-hover);
       color: var(--paper-accent);
     }
 
@@ -646,6 +990,12 @@ const shouldShowTocAction = showTocIcon && tocItems.length > 0;
   @media (prefers-reduced-motion: reduce) {
     .blog-top-nav {
       transition: none;
+    }
+
+    .nav-liquid-glass {
+      background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.36), rgba(var(--paper-surface-rgb), 0.58)),
+        var(--paper-nav);
     }
   }
 </style>
