@@ -436,6 +436,45 @@ const hasSidebar = shouldRenderSidebar && hasToc;
     background: transparent;
   }
 
+  .article-content :global(.math-display) {
+    overflow-x: auto;
+    margin: 28px 0 30px;
+    padding: 18px 20px;
+    border: 1px solid var(--paper-line);
+    border-radius: 7px;
+    background: color-mix(in srgb, var(--paper-soft) 72%, transparent);
+    color: var(--paper-ink);
+    font-family: var(--font-code);
+    font-size: 1.02rem;
+    line-height: 1.9;
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  .article-content :global(.fraction) {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: center;
+    min-width: 2.2em;
+    margin: 0 0.2em;
+    text-align: center;
+    vertical-align: middle;
+  }
+
+  .article-content :global(.fraction-top) {
+    display: block;
+    padding: 0 0.45em 0.1em;
+    border-bottom: 1px solid currentColor;
+    line-height: 1.2;
+  }
+
+  .article-content :global(.fraction-bottom) {
+    display: block;
+    padding: 0.1em 0.45em 0;
+    line-height: 1.2;
+  }
+
   .article-content :global(.expressive-code) {
     margin: 28px 0 30px;
     font-family: var(--font-code);
