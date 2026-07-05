@@ -302,9 +302,9 @@ function getDayHref(day: HeatmapDay) {
   }
 
   .heatmap-cell {
-    border-radius: 2.5px;
-    background: rgba(102, 125, 109, 0.12);
-    box-shadow: inset 0 0 0 1px var(--paper-line);
+    border-radius: 3px;
+    background: #e7ece8;
+    box-shadow: inset 0 0 0 1px rgba(69, 87, 74, 0.18);
   }
 
   .future-cell {
@@ -313,22 +313,47 @@ function getDayHref(day: HeatmapDay) {
   }
 
   .level-0 {
-    background: rgba(102, 125, 109, 0.16);
+    background: #e7ece8;
   }
 
   .level-1 {
-    background: #dce8dc;
+    background: #a9e6b7;
   }
 
   .level-2 {
-    background: #b9cbb9;
+    background: #68c982;
   }
 
   .level-3 {
-    background: #8fa58f;
+    background: #3f9b5f;
   }
 
   .level-4 {
+    background: #2f7148;
+  }
+
+  :global(:root[data-theme='dark']) .heatmap-cell {
+    background: rgba(102, 125, 109, 0.12);
+    box-shadow: inset 0 0 0 1px var(--paper-line);
+  }
+
+  :global(:root[data-theme='dark']) .level-0 {
+    background: rgba(102, 125, 109, 0.16);
+  }
+
+  :global(:root[data-theme='dark']) .level-1 {
+    background: #dce8dc;
+  }
+
+  :global(:root[data-theme='dark']) .level-2 {
+    background: #b9cbb9;
+  }
+
+  :global(:root[data-theme='dark']) .level-3 {
+    background: #8fa58f;
+  }
+
+  :global(:root[data-theme='dark']) .level-4 {
     background: #667d6d;
   }
 
