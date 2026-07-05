@@ -1,0 +1,26 @@
+[vite] connected.
+[2m15:59:20[22m [34m[types][39m Generated [2m1ms[22m
+[vite] connected.
+[2m15:59:20[22m [34m[content][39m Syncing content
+[2m15:59:20[22m [34m[content][39m Astro config changed
+[2m15:59:20[22m [34m[content][39m Clearing content store
+[2m15:59:20[22m [34m[content][39m Synced content
+[2m15:59:20[22m [34m[vite][39m Re-optimizing dependencies because vite config has changed
+[42m[1m astro [22m[49m [32mv6.4.4[39m [2mready in[22m 2459 [2mms[22m
+[2m┃[22m Local    [36mhttp://127.0.0.1:4321/[39m
+[2m15:59:20[22m [32mwatching for file changes...[39m
+[2m15:59:57[22m [34m[200][39m / [2m868ms[22m
+[2m15:59:58[22m [34m[vite][39m [32m✨ new dependencies optimized: [33mastro/virtual-modules/transitions-router.js, astro/virtual-modules/transitions-types.js, astro/virtual-modules/transitions-events.js, astro/virtual-modules/transitions-swap-functions.js[32m[39m
+[2m15:59:58[22m [34m[vite][39m [32m✨ optimized dependencies changed. reloading[39m
+[2m16:00:43[22m [34m[200][39m /blog [2m493ms[22m
+[2m16:00:45[22m [34m[200][39m /blog/series/ [2m514ms[22m
+[2m16:00:45[22m [34m[200][39m / [2m473ms[22m
+[2m16:00:49[22m [34m[200][39m /blog/logic-regression-notes/ [2m809ms[22m
+[2m16:00:49[22m [34m[200][39m /blog/03-classification-notes/ [2m809ms[22m
+[2m16:00:51[22m [34m[200][39m /blog/01-linear-regression-notes/ [2m506ms[22m
+[2m16:01:25[22m [34m[200][39m /blog/categories/ [2m543ms[22m
+[2m16:01:26[22m [34m[200][39m /blog/categories/日常/ [2m480ms[22m
+[2m16:01:29[22m [34m[200][39m /blog/ [2m548ms[22m
+[2m16:01:36[22m [34m[200][39m /blog/series/机器学习笔记/ [2m553ms[22m
+[2m16:20:03[22m [34m[200][39m /blog [2m440ms[22m
+[2m16:20:03[22m [34m[200][39m /projects [2m1073ms[22m
