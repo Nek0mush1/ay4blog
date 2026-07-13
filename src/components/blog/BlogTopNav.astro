@@ -1,5 +1,6 @@
 ---
 import { Github, ListTree, Menu } from 'lucide-astro';
+import PageBackButton from './PageBackButton.astro';
 import SiteSearch from './SiteSearch.astro';
 import SunMoonToggle from './SunMoonToggle.astro';
 import { getSiteConfig } from '../../data/site';
@@ -43,6 +44,16 @@ function isActive(href: string) {
   return currentPath === normalizedHref || currentPath.startsWith(`${normalizedHref}/`);
 }
 
+function getBackHref(pathname: string) {
+  if (pathname.startsWith('/blog/categories/')) return '/blog/categories/';
+  if (pathname === '/blog/categories') return '/blog/';
+  if (pathname.startsWith('/blog/series/')) return '/blog/series/';
+  if (pathname === '/blog/series') return '/blog/';
+  if (pathname.startsWith('/blog/')) return '/blog/';
+  if (pathname.startsWith('/projects/')) return '/projects/';
+  return '/';
+}
+
 const routeLabels: Record<string, string> = {
   '/blog': 'blog',
   '/projects': 'projects',
@@ -55,10 +66,16 @@ const activeRoute = Object.entries(routeLabels).find(
 );
 const brandRouteLabel = activeRoute?.[1];
 const shouldShowTocAction = showTocIcon && tocItems.length > 0;
+const backHref = getBackHref(currentPath);
 ---
 
-<header class="blog-top-nav" data-pagefind-ignore>
+<header
+  class:list={['blog-top-nav', { 'has-page-back': currentPath !== '/' }]}
+  data-pagefind-ignore
+>
   <span class="nav-liquid-glass" aria-hidden="true" data-liquid-glass-layer></span>
+
+  {currentPath !== '/' && <PageBackButton href={backHref} />}
 
   <button
     class="mobile-menu-toggle"
@@ -548,6 +565,12 @@ const shouldShowTocAction = showTocIcon && tocItems.length > 0;
     will-change: transform;
   }
 
+  .blog-top-nav.has-page-back {
+    grid-template-columns: auto auto minmax(0, 1fr) auto;
+    gap: 14px;
+    width: min(calc(100% - 32px), 1010px);
+  }
+
   .brand,
   .nav-links,
   .nav-actions,
@@ -795,6 +818,13 @@ const shouldShowTocAction = showTocIcon && tocItems.length > 0;
       min-height: 54px;
       padding: 8px 10px 8px 14px;
       border-radius: 18px;
+    }
+
+    .blog-top-nav.has-page-back {
+      grid-template-columns: auto auto minmax(0, 1fr) auto;
+      gap: 8px;
+      width: min(calc(100% - 20px), 560px);
+      padding-left: 9px;
     }
 
     .nav-links {

@@ -2,7 +2,6 @@
 import { getCollection } from 'astro:content';
 import BaseHead from '../../../components/BaseHead.astro';
 import Footer from '../../../components/Footer.astro';
-import BackLink from '../../../components/blog/BackLink.astro';
 import BlogTopNav from '../../../components/blog/BlogTopNav.astro';
 import CategoryCard from '../../../components/blog/CategoryCard.astro';
 import { getSiteConfig } from '../../../data/site';
@@ -59,7 +58,6 @@ const categories = getAllCategories(await getCollection('blog', ({ data }) => !d
   <body>
     <BlogTopNav />
     <main data-pagefind-body>
-      <BackLink href="/blog/" label="Back to blog" />
       <header class="archive-hero archive-header-shared page-header-spacing">
         <div class="archive-header-main">
           <p class="archive-kicker">Browse notes</p>

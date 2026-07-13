@@ -2,7 +2,6 @@
 import { getCollection } from 'astro:content';
 import BaseHead from '../../../components/BaseHead.astro';
 import Footer from '../../../components/Footer.astro';
-import BackLink from '../../../components/blog/BackLink.astro';
 import BlogTopNav from '../../../components/blog/BlogTopNav.astro';
 import SeriesCard from '../../../components/blog/SeriesCard.astro';
 import { getSiteConfig } from '../../../data/site';
@@ -48,7 +47,6 @@ const series = getAllSeries(await getCollection('blog', ({ data }) => !data.draf
   <body>
     <BlogTopNav />
     <main data-pagefind-body>
-      <BackLink href="/blog/" label="Back to blog" />
       <header class="archive-hero archive-header-shared page-header-spacing">
         <div class="archive-header-main">
           <p class="archive-kicker">Reading paths</p>
