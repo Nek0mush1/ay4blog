@@ -6,9 +6,10 @@ import { getThemePalette } from '../data/site';
 interface Props {
   title: string;
   description: string;
+  bodyClass?: string;
 }
 
-const { title, description } = Astro.props;
+const { title, description, bodyClass } = Astro.props;
 const palette = await getThemePalette();
 ---
 
@@ -17,7 +18,7 @@ const palette = await getThemePalette();
   <head>
     <BaseHead title={title} description={description} />
   </head>
-  <body>
+  <body class={bodyClass}>
     <BlogTopNav />
     <slot />
   </body>

@@ -520,3 +520,26 @@ h6 {
     line-height: 1.1;
   }
 }
+
+body.home-page {
+  background-color: var(--paper-surface);
+  background-image: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--paper-bg) 77%, var(--paper-accent) 23%) 0%,
+    color-mix(in srgb, var(--paper-bg) 87%, var(--paper-accent) 13%) 42%,
+    color-mix(in srgb, var(--paper-bg) 95%, var(--paper-accent) 5%) 82%,
+    var(--paper-surface) 100%
+  );
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+:root[data-theme='dark'] body.home-page {
+  background-image: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--paper-bg) 88%, var(--paper-accent) 12%) 0%,
+    color-mix(in srgb, var(--paper-bg) 93%, var(--paper-accent) 7%) 45%,
+    color-mix(in srgb, var(--paper-bg) 97%, var(--paper-accent) 3%) 82%,
+    var(--paper-bg) 100%
+  );
+}
